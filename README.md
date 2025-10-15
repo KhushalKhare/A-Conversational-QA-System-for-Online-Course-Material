@@ -1,10 +1,32 @@
-
+# RAG-based QA Chatbot for Web Content
 
 ## 📖 Description
 
 This project is a Retrieval-Augmented Generation (RAG) system built with LangChain and Hugging Face. It ingests content from a specified webpage, embeds the information into a vector database (ChromaDB), and allows a user to ask questions about that content. The system uses a `google/flan-t5-base` model to generate answers based on the retrieved context.
 
 This was developed as part of a university master's project to demonstrate a practical end-to-end RAG pipeline.
+
+---
+
+## 🏛️ Architecture and Workflow
+
+This project follows a standard Retrieval-Augmented Generation (RAG) architecture, divided into two main phases: an offline **Indexing Phase** and a real-time **Retrieval & Generation Phase**.
+
+http://googleusercontent.com/image_generation_content/0
+
+### Phase 1: Indexing (Offline)
+This is a one-time, preparatory process to build the system's knowledge base.
+1.  **Load Content**: The system ingests the raw text from the source webpage.
+2.  **Chunk Text**: The text is split into smaller, manageable chunks to ensure effective embedding.
+3.  **Embed Chunks**: Each text chunk is converted into a numerical vector (embedding) using the `all-MiniLM-L6-v2` model. This vector captures the semantic meaning of the text.
+4.  **Store Vectors**: The embeddings and their corresponding text chunks are stored in a ChromaDB vector store, which indexes them for fast and efficient searching.
+
+### Phase 2: Retrieval & Generation (Real-time)
+This phase is executed every time a user asks a question.
+1.  **Embed Query**: The user's question is converted into a vector using the same embedding model.
+2.  **Similarity Search**: The system searches the ChromaDB store to find the text chunks with vectors most similar to the user's query vector. These chunks are the most relevant pieces of context.
+3.  **Augment Prompt**: The retrieved context is combined with the original query to create a detailed prompt for the Language Model.
+4.  **Generate Answer**: This augmented prompt is sent to the `google/flan-t5-base` LLM, which generates a final answer grounded in the provided context.
 
 ---
 
@@ -63,57 +85,34 @@ pip install -r requirements.txt
 
 ### 4. Set Up Environment Variables
 
-You need a Hugging Face API key to download and use the models.
-
-Create a file named `.env` in the root of your project directory and add your key:
+You need a Hugging Face API key to download and use the models. Create a file named `.env` in the root of your project directory and add your key:
 
 ```
 HUGGING_FACE_API_KEY="hf_YourHuggingFaceApiKeyHere"
-```
-
-*Your notebook code will need a slight modification to use this `.env` file instead of `google.colab.userdata`.*
-
-**Replace this code:**
-```python
-# from google.colab import userdata
-# import os
-# os.environ['HUGGING_FACE_API_KEY'] = userdata.get('huggingface')
-```
-**With this:**
-```python
-import os
-from dotenv import load_dotenv
-
-load_dotenv() # Loads variables from .env file
-
-# The API key is now loaded into the environment automatically
-# You can optionally check it with:
-# api_key = os.getenv("HUGGING_FACE_API_KEY")
-# print("API Key Loaded.")
 ```
 
 ---
 
 ## ▶️ How to Run
 
-The primary logic is contained within the Jupyter Notebook (`Untitled84 (1).ipynb`).
+The primary logic is contained within the `rag_qa_system.py` script.
 
 1.  Ensure your virtual environment is activated and dependencies are installed.
-2.  Launch Jupyter Notebook or JupyterLab:
+2.  Run the script from your terminal:
     ```bash
-    jupyter notebook
+    python rag_qa_system.py
     ```
-3.  Open the notebook file and run the cells sequentially from top to bottom. The script will:
+3.  The script will:
     * Load data from the URL.
     * Create and persist the ChromaDB vector store in a local folder (`./chroma_db_web`).
     * Initialize the QA chain.
-    * Run example queries and print the results.
+    * Run example queries and print the results to the console.
 
 ---
 
 ## 📝 Example Usage
 
-After running the notebook, you can modify the query in the final cells to ask your own questions about the source content.
+You can modify the queries within the `rag_qa_system.py` file to ask your own questions about the source content.
 
 **Example Query:**
 
@@ -121,7 +120,6 @@ After running the notebook, you can modify the query in the final cells to ask y
 query = "What projects are covered in the course?"
 result = qa_chain.invoke({"query": query})
 print(result["result"])
-
 ```
 
 **Expected Output:**
