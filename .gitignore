@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment variables
+.env
+
+# Local Database
+chroma_db_web/
+
+# IDE files
+.idea/
+.vscode/
