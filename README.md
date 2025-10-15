@@ -1,86 +1,129 @@
-# A-Conversational-QA-System-for-Online-Course-Material
-Add a brief, clear description. For example: "A RAG-based chatbot using LangChain and Flask to answer questions about the Educosys Generative AI course. Developed for a university master's project.
 
-# RAG-Powered Course Advisor
 
-This project is a command-line Retrieval-Augmented Generation (RAG) advisor that answers questions about the Educosys Generative AI course. It is built using LangChain, Hugging Face Transformers, and ChromaDB.
+## 📖 Description
 
-This was developed as a proof-of-concept for a university master's project, demonstrating the practical application of RAG pipelines for specialized question-answering systems.
+This project is a Retrieval-Augmented Generation (RAG) system built with LangChain and Hugging Face. It ingests content from a specified webpage, embeds the information into a vector database (ChromaDB), and allows a user to ask questions about that content. The system uses a `google/flan-t5-base` model to generate answers based on the retrieved context.
 
----
-
-## ## Features
-
-* **Automated Data Ingestion**: Automatically fetches the latest course content from the official website.
-* **Advanced RAG Pipeline**: Uses a sentence-transformer model (`all-MiniLM-L6-v2`) for efficient retrieval and a Large Language Model (`google/flan-t5-base`) for answer generation.
-* **Interactive Command-Line Interface**: A simple and intuitive chat session that runs directly in your terminal.
+This was developed as part of a university master's project to demonstrate a practical end-to-end RAG pipeline.
 
 ---
 
-## ## How It Works
+## ✨ Features
 
-The system follows a classic RAG pipeline to provide accurate, context-aware answers:
-
-1.  **Data Loading & Chunking**: The script begins by scraping the content from the target webpage. This content is then split into smaller, overlapping chunks suitable for processing.
-2.  **Embedding & Storage**: Each text chunk is converted into a numerical vector (an embedding) using a sentence-transformer model. These vectors are then stored in an in-memory ChromaDB vector store, creating a searchable knowledge base.
-3.  **Retrieval & Generation**: When you ask a question:
-    * Your query is also converted into an embedding.
-    * The system performs a similarity search in the vector store to find the most relevant text chunks from the original document.
-    * These relevant chunks, along with your original question, are fed into the LLM (`flan-t5-base`).
-    * The LLM generates a coherent, human-readable answer based on the provided context.
-
-
+* **Web Content Ingestion**: Dynamically loads and parses text content from a live URL.
+* **Text Chunking**: Splits the document into smaller, manageable chunks for effective embedding.
+* **Vector Embeddings**: Uses the `sentence-transformers/all-MiniLM-L6-v2` model to create vector representations of the text.
+* **Vector Storage**: Stores and indexes the embeddings in a persistent local ChromaDB database.
+* **Question-Answering**: Utilizes a `RetrievalQA` chain to find relevant documents and generate answers with the `google/flan-t5-base` LLM.
 
 ---
 
-## ## Setup and Installation
+## 💻 Technology Stack
 
-Follow these steps to set up and run the project on your local machine.
-
-### ### Prerequisites
-
-* Python 3.8 or higher
-* Git
-
-### ### Installation Steps
-
-1.  **Clone the repository:**
-    Open your terminal and clone the project files.
-    ```bash
-    git clone [https://github.com/](https://github.com/)<your-username>/rag-powered-course-advisor.git
-    cd rag-powered-course-advisor
-    ```
-
-2.  **Create and activate a virtual environment:**
-    It's highly recommended to use a virtual environment to manage dependencies.
-    ```bash
-    # For macOS/Linux
-    python3 -m venv venv
-    source venv/bin/activate
-
-    # For Windows
-    python -m venv venv
-    .\venv\Scripts\activate
-    ```
-
-3.  **Install the required packages:**
-    Use pip to install all the necessary libraries from the `requirements.txt` file.
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Note: If you have a CUDA-enabled GPU, ensure PyTorch is installed with the correct CUDA version for significantly better performance.*
+* **Core Framework**: LangChain
+* **LLM**: `google/flan-t5-base` (via Hugging Face Transformers)
+* **Embedding Model**: `sentence-transformers/all-MiniLM-L6-v2`
+* **Vector Database**: ChromaDB
+* **Language**: Python 3.12
 
 ---
 
-## ## How to Run
+## 🚀 Setup and Installation
 
-1.  Make sure your virtual environment is activated.
+Follow these steps to set up the project locally.
 
-2.  Run the main chat script from the project's root directory:
+### 1. Clone the Repository
+
+```bash
+git clone [https://github.com/your-username/your-repo-name.git](https://github.com/your-username/your-repo-name.git)
+cd your-repo-name
+```
+
+### 2. Create a Virtual Environment
+
+It's highly recommended to use a virtual environment to manage project dependencies.
+
+```bash
+# For Unix/macOS
+python3 -m venv venv
+source venv/bin/activate
+
+# For Windows
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install Dependencies
+
+Install all the required packages from the `requirements.txt` file.
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Set Up Environment Variables
+
+You need a Hugging Face API key to download and use the models.
+
+Create a file named `.env` in the root of your project directory and add your key:
+
+```
+HUGGING_FACE_API_KEY="hf_YourHuggingFaceApiKeyHere"
+```
+
+*Your notebook code will need a slight modification to use this `.env` file instead of `google.colab.userdata`.*
+
+**Replace this code:**
+```python
+# from google.colab import userdata
+# import os
+# os.environ['HUGGING_FACE_API_KEY'] = userdata.get('huggingface')
+```
+**With this:**
+```python
+import os
+from dotenv import load_dotenv
+
+load_dotenv() # Loads variables from .env file
+
+# The API key is now loaded into the environment automatically
+# You can optionally check it with:
+# api_key = os.getenv("HUGGING_FACE_API_KEY")
+# print("API Key Loaded.")
+```
+
+---
+
+## ▶️ How to Run
+
+The primary logic is contained within the Jupyter Notebook (`Untitled84 (1).ipynb`).
+
+1.  Ensure your virtual environment is activated and dependencies are installed.
+2.  Launch Jupyter Notebook or JupyterLab:
     ```bash
-    python chat.py
+    jupyter notebook
     ```
+3.  Open the notebook file and run the cells sequentially from top to bottom. The script will:
+    * Load data from the URL.
+    * Create and persist the ChromaDB vector store in a local folder (`./chroma_db_web`).
+    * Initialize the QA chain.
+    * Run example queries and print the results.
 
-3.  **Wait for initialization.** The first time you run the script, it will download the embedding and language models (several hundred MBs) and set up the RAG pipeline. This may take a few minutes depending on your internet connection.
+---
 
-4.  **Start chatting!** Once you see the welcome message, you can start asking questions directly in the terminal. To end the session, simply type `exit` and press Enter.
+## 📝 Example Usage
+
+After running the notebook, you can modify the query in the final cells to ask your own questions about the source content.
+
+**Example Query:**
+
+```python
+query = "What projects are covered in the course?"
+result = qa_chain.invoke({"query": query})
+print(result["result"])
+
+```
+
+**Expected Output:**
+
+The model will provide a summary of the projects mentioned on the webpage, such as building a neural network with TensorFlow, an end-to-end chatbot with Streamlit, and an app for image generation.
