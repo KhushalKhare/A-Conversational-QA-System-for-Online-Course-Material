@@ -12,7 +12,7 @@ This was developed as part of a university master's project to demonstrate a pra
 
 This project follows a standard Retrieval-Augmented Generation (RAG) architecture, divided into two main phases: an offline **Indexing Phase** and a real-time **Retrieval & Generation Phase**.
 
-http://googleusercontent.com/image_generation_content/0
+![Project Architecture Diagram](https://github.com/KhushalKhare/A-Conversational-QA-System-for-Online-Course-Material/blob/main/RAG%20ARCHITECTURE%20DIAGRAM.png)
 
 ### Phase 1: Indexing (Offline)
 This is a one-time, preparatory process to build the system's knowledge base.
